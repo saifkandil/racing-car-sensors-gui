@@ -33,7 +33,58 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late math.Random _random;
+
+  ///
+  /// This function will generate dummy data to show GUI capabilities
+  ///
+  double _generateDummyData() {
+    return _random.nextDouble();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _random = math.Random();
+    _controller = AnimationController(
+      value: 0.0,
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    );
+    _controller
+      ..addListener(_animationChanged)
+      ..addStatusListener(_animationStatusChanged);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _animationChanged() {
+    setState(() {
+      // The animation controller's state is our build state, and it changed already.
+    });
+  }
+
+  void _animationStatusChanged(AnimationStatus status) {
+    switch (status) {
+      case AnimationStatus.forward:
+        break;
+      case AnimationStatus.reverse:
+        break;
+      case AnimationStatus.dismissed:
+        break;
+      case AnimationStatus.completed:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,8 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: RepaintBoundary(
                   child: CustomPaint(
                     painter: SpeedView(
-                      speedProgressValue: 0.1,
-                      fuelProgressValue: 0.5,
+                      speedProgressValue:
+                          _generateDummyData() * _controller.value,
+                      fuelProgressValue:
+                          _generateDummyData() * _controller.value,
                     ),
                   ),
                 ),
@@ -61,8 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: RepaintBoundary(
                   child: CustomPaint(
                     painter: RPMView(
-                      rpmProgressValue: 0.1,
-                      batteryProgressValue: 0.5,
+                      rpmProgressValue:
+                          _generateDummyData() * _controller.value,
+                      batteryProgressValue:
+                          _generateDummyData() * _controller.value,
                     ),
                   ),
                 ),
@@ -109,9 +164,6 @@ class SpeedView extends CustomPainter {
     ///
     final speedProgressViewStartAngle = (120.0 * _kToRadian);
     final speedProgressViewEndAngle = (10.0 * _kToRadian);
-
-    print('speedProgressViewStartAngle: ${speedProgressViewStartAngle}');
-    print('speedProgressViewEndAngle: ${speedProgressViewEndAngle}');
 
     ///
     /// Speed progress arc length has two parts
@@ -235,6 +287,24 @@ class SpeedView extends CustomPainter {
       ///
       currentAngle += speedArcSinglePartLength;
     }
+
+    _paint.color = Colors.red;
+
+    ///
+    /// Speed progress arc
+    ///
+    canvas.drawArc(
+      Rect.fromCircle(
+        center: centerPoint,
+        radius: speedProgressViewRadius,
+      ),
+      speedProgressViewStartAngle,
+      speedProgressArcLength * _speedProgressValue,
+      false,
+      _paint,
+    );
+
+    _paint.color = Colors.black;
 
     ///
     /// This is speed meter circle view radius, it's responsive to different screen sizes
@@ -395,7 +465,7 @@ class SpeedView extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }
 
@@ -677,6 +747,11 @@ class RPMView extends CustomPainter {
     currentAngle = batteryLevelProgressViewStartAngle;
 
     ///
+    /// We save our last battery level so we can add on it
+    ///
+    int currentBatteryLevel = 0;
+
+    ///
     /// We loop 3 times to draw 2 parts with 3 splits between them
     ///
     for (int i = 0; i < 3; i++) {
@@ -698,6 +773,48 @@ class RPMView extends CustomPainter {
         ),
         _paint,
       );
+
+      ///
+      /// Draw battery level value text
+      ///
+      switch (i) {
+        case 0:
+        case 2:
+          canvas.drawParagraph(
+            (ui.ParagraphBuilder(
+              ui.ParagraphStyle(
+                fontSize: heightGreater
+                    ? ((size.width) * 0.04)
+                    : ((size.height) * 0.04),
+                textAlign: TextAlign.justify,
+              ),
+            )
+                  ..pushStyle(
+                    ui.TextStyle(
+                      color: Colors.black38,
+                    ),
+                  )
+                  ..addText('$currentBatteryLevel'))
+                .build()
+              ..layout(
+                ui.ParagraphConstraints(
+                  width: size.width,
+                ),
+              ),
+            Offset(
+              centerPoint.dx +
+                  (batteryLevelProgressViewRadius - 25.0) *
+                      math.cos(currentAngle),
+              centerPoint.dy +
+                  (batteryLevelProgressViewRadius - 25.0) *
+                      math.sin(currentAngle),
+            ),
+          );
+          currentBatteryLevel += 100;
+          break;
+        default:
+          break;
+      }
 
       ///
       /// We update our `currentAngle` each time to draw in the next location
@@ -767,6 +884,11 @@ class RPMView extends CustomPainter {
     currentAngle = temperatureProgressViewStartAngle;
 
     ///
+    /// We save our last temperature so we can add on it
+    ///
+    int currentTemperature = 40;
+
+    ///
     /// We loop 3 times to draw 2 parts with 3 splits between them
     ///
     for (int i = 0; i < 3; i++) {
@@ -788,6 +910,50 @@ class RPMView extends CustomPainter {
         ),
         _paint,
       );
+
+      ///
+      /// Draw temperature value text
+      /// Note that split length = 20.0 so we place our text more further at 25.0 (check out offset of this paragraph)
+      /// Note that we add 80 on current Temperature as shown in the video: https://www.youtube.com/watch?v=QbEYhQIjlQc
+      ///
+      switch (i) {
+        case 0:
+        case 2:
+          canvas.drawParagraph(
+            (ui.ParagraphBuilder(
+              ui.ParagraphStyle(
+                fontSize: heightGreater
+                    ? ((size.width) * 0.04)
+                    : ((size.height) * 0.04),
+                textAlign: TextAlign.justify,
+              ),
+            )
+                  ..pushStyle(
+                    ui.TextStyle(
+                      color: Colors.black38,
+                    ),
+                  )
+                  ..addText('$currentTemperature'))
+                .build()
+              ..layout(
+                ui.ParagraphConstraints(
+                  width: size.width,
+                ),
+              ),
+            Offset(
+              centerPoint.dx +
+                  (batteryLevelProgressViewRadius - 25.0) *
+                      math.cos(currentAngle),
+              centerPoint.dy +
+                  (batteryLevelProgressViewRadius - 25.0) *
+                      math.sin(currentAngle),
+            ),
+          );
+          currentTemperature += 80;
+          break;
+        default:
+          break;
+      }
 
       ///
       /// We update our `currentAngle` each time to draw in the next location
