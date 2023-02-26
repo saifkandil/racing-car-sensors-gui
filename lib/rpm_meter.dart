@@ -32,8 +32,8 @@ class RPMView extends CustomPainter {
     ///
     /// Note that rotating is Anti-clock wise starting from +ve part of x-axis
     ///
-    final rpmProgressArcViewStartAngle = (180.0 * _kToRadian);
-    final rpmProgressArcViewEndAngle = 0.0;
+    const rpmProgressArcViewStartAngle = (180.0 * _kToRadian);
+    // const rpmProgressArcViewEndAngle = 0.0;
 
     ///
     /// RPM progress arc length is the angle from -ve part of x-axis till +ve part of x-axis in Anti-clock wise direction
@@ -55,7 +55,7 @@ class RPMView extends CustomPainter {
     ///                                     |
     ///                                     |
     ///
-    final rpmProgressParentArcLength = math.pi;
+    const rpmProgressParentArcLength = math.pi;
 
     _paint.style = PaintingStyle.stroke;
     _paint.strokeWidth =
@@ -64,7 +64,7 @@ class RPMView extends CustomPainter {
     ///
     /// We divide our progress arc into 8 parts each 2 parts are split by a white split
     ///
-    final rpmProgressChildArcLength = rpmProgressParentArcLength / 8.0;
+    const rpmProgressChildArcLength = rpmProgressParentArcLength / 8.0;
 
     ///
     /// We save our last angle so we can draw the next part
@@ -288,8 +288,8 @@ class RPMView extends CustomPainter {
     ///
     /// Note that rotating is clock wise starting from (70 degrees from +ve part of x-axis) to (20 degrees from +ve part of x-axis)
     ///
-    final batteryLevelProgressArcViewStartAngle = (70.0 * _kToRadian);
-    final batteryLevelProgressArcViewEndAngle = (20.0 * _kToRadian);
+    const batteryLevelProgressArcViewStartAngle = (70.0 * _kToRadian);
+    const batteryLevelProgressArcViewEndAngle = (20.0 * _kToRadian);
 
     ///
     /// Battery level progress arc length is the angle from (70 degrees from +ve part of x-axis)
@@ -314,7 +314,7 @@ class RPMView extends CustomPainter {
     ///                                     |       ###############################
     ///                                     |        * (70 degrees)                     *  (20 degrees)
     ///
-    final batteryLevelProgressArcLength =
+    const batteryLevelProgressArcLength =
         batteryLevelProgressArcViewStartAngle -
             batteryLevelProgressArcViewEndAngle;
 
@@ -327,7 +327,7 @@ class RPMView extends CustomPainter {
     /// We divide our progress arc into 2 parts each 2 parts with 3 splits as in this video:
     /// https://www.youtube.com/watch?v=QbEYhQIjlQc
     ///
-    final batteryLevelProgressChildArcLength =
+    const batteryLevelProgressChildArcLength =
         batteryLevelProgressArcLength / 2.0;
 
     canvas.drawArc(
@@ -441,8 +441,8 @@ class RPMView extends CustomPainter {
     ///
     /// Note that rotating is clock wise starting from (110 degrees from +ve part of x-axis) to (160 degrees from +ve part of x-axis)
     ///
-    final temperatureProgressArcViewStartAngle = (110.0 * _kToRadian);
-    final temperatureProgressArcViewEndAngle = (160.0 * _kToRadian);
+    const temperatureProgressArcViewStartAngle = (110.0 * _kToRadian);
+    const temperatureProgressArcViewEndAngle = (160.0 * _kToRadian);
 
     ///
     /// Temperature progress arc length is the angle from (110 degrees from +ve part of x-axis)
@@ -467,14 +467,14 @@ class RPMView extends CustomPainter {
     ///  ############################   (110 degrees)
     ///    (temperature's angle)            |
     ///
-    final temperatureProgressArcLength = temperatureProgressArcViewStartAngle -
+    const temperatureProgressArcLength = temperatureProgressArcViewStartAngle -
         temperatureProgressArcViewEndAngle;
 
     ///
     /// We divide our progress arc into 2 parts each 2 parts with 3 splits as in this video:
     /// https://www.youtube.com/watch?v=QbEYhQIjlQc
     ///
-    final temperatureProgressChildArcLength =
+    const temperatureProgressChildArcLength =
         temperatureProgressArcLength / 2.0;
 
     canvas.drawArc(

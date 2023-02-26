@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage>
           yRangeMin + _random.nextDouble() * (yRangeMax - yRangeMin);
 
       ///
-      /// After we generated a new offset we add it and remove the first one so that we keep number of points constant (equal 10)
+      /// After we generated a new offset we add it and remove the first one so that we keep number of points in our queue constant (equals 10)
       ///
       _ggQueue.add(Offset(xSmallRange, ySmallRange));
       _ggQueue.removeFirst();
