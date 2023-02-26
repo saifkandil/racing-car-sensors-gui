@@ -23,6 +23,7 @@ samples, guidance on mobile development, and a full API reference.
 
 Before building and running this project, you will need to have the following installed on your system (Windows):
 
+- [Important] Simple math concepts
 - Flutter SDK v3.7.0
 - Visual Studio Community 2022 v17.5.0
 - Android Studio v2021.3 (Recommended) or VSCode v1.75.1
